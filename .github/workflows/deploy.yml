@@ -1,8 +1,18 @@
+<<<<<<< HEAD
 ﻿name: Deploy BuildCycle
 
 on:
   push:
     branches: [main]
+=======
+
+name: Deploy BuildCycle to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+>>>>>>> 0137683e3400bd8035ac4fd0a5dd5145551d8e16
   workflow_dispatch:
 
 permissions:
@@ -10,6 +20,7 @@ permissions:
   pages: write
   id-token: write
 
+<<<<<<< HEAD
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -26,3 +37,43 @@ jobs:
         with:
           path: ./dist
       - uses: actions/deploy-pages@v4
+=======
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
+>>>>>>> 0137683e3400bd8035ac4fd0a5dd5145551d8e16
